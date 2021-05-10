@@ -1,8 +1,8 @@
-import React, {useState} from "react"
+import React, {useEffect,useState} from "react"
 
 
 const api = {
-  key: 'KEY',
+  key: 'key',
   base: 'https://api.openweathermap.org/data/2.5/'
 }
 
@@ -10,6 +10,7 @@ function App() {
 
   const [query,setQuery] = useState('')
   const [weather,setWeather ] = useState('')
+  
 
   const search = evt => {
     if (evt.key === "Enter") {
@@ -34,16 +35,26 @@ function App() {
     let year = datetime.getFullYear();
     let hour = datetime.getHours();
     let minute = datetime.getMinutes();
+    let seconds = datetime.getSeconds();
 
-    return `${day} ${date} ${month} ${year} ${hour}:${minute}`
+    return `${day} ${date} ${month} ${year} ${hour}:${minute}:${seconds}`
   }
+
+  const [date,setDate] = useState(dateBuilder)
 
   const bgChanger = (temp) =>{
     if (typeof temp !="undefined"){
       return(temp <10 ? 'app' : 'app warm')
     }
-
   }
+
+  useEffect(() => {
+    const date = setTimeout(() => {
+      setDate(dateBuilder());
+    }, 1000);
+    return () => clearTimeout(date);    
+  });
+  
 
   return (
     <div className={(typeof weather.main != 'undefined') ? bgChanger(weather.main.temp) : 'app'}>
